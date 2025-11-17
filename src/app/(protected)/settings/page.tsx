@@ -1,10 +1,10 @@
 import { requireAuth } from '@/lib/auth/session';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProfileSettings } from '@/components/settings/profile-settings';
-import { AccountSettings } from '@/components/settings/account-settings';
-import { PrivacySettings } from '@/components/settings/privacy-settings';
-import { AppearanceSettings } from '@/components/settings/appearance-settings';
+import { ProfileSettings } from '@/features/user/components/profile-settings';
+import { AccountSettings } from '@/features/user/components/account-settings';
+import { PrivacySettings } from '@/features/user/components/privacy-settings';
+import { AppearanceSettings } from '@/features/user/components/appearance-settings';
 
 export default async function SettingsPage() {
   const user = await requireAuth();

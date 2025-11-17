@@ -52,7 +52,8 @@ src/
 
 ### 3. DI 컨테이너 설정
 - ✅ `lib/di/symbols.ts` - 심볼 정의
-- ✅ `lib/di/container.ts` - 컨테이너 설정 및 바인딩
+- ✅ `lib/di/container.ts` - 요청별 컨테이너 팩토리 함수 (`createContainer()`)
+- ✅ 요청별(Request-Scoped) 컨테이너 패턴 적용 (싱글톤 제거)
 
 ### 4. 예시 Feature 모듈
 - ✅ `features/auth/` - 인증 기능 모듈 (서비스 계층 + 바인딩)
@@ -99,8 +100,30 @@ export const appRouter = router({
 
 ## ⚠️ 주의사항
 
-1. **DI는 선택적 사용**: 간단한 로직은 DI 없이 직접 호출 가능
-2. **서비스 계층은 복잡한 로직에만**: 단순 CRUD는 직접 접근 가능
-3. **3-Tier 아키텍처 유지**: Tier별 접근 패턴 준수
-4. **점진적 마이그레이션**: 한 번에 모든 코드를 마이그레이션하지 말고 feature별로 진행
+1. **요청별 컨테이너 패턴**: 싱글톤 컨테이너를 절대 사용하지 않습니다. tRPC 라우터에서는 `ctx.container`를 사용합니다.
+2. **DI는 선택적 사용**: 간단한 로직은 DI 없이 직접 호출 가능
+3. **서비스 계층은 복잡한 로직에만**: 단순 CRUD는 직접 접근 가능
+4. **3-Tier 아키텍처 유지**: Tier별 접근 패턴 준수
+5. **점진적 마이그레이션**: 한 번에 모든 코드를 마이그레이션하지 말고 feature별로 진행
+
+## 🔒 보안: 요청별 컨테이너 패턴
+
+**중요**: 싱글톤 컨테이너를 사용하면 모든 사용자가 같은 Supabase 클라이언트를 공유하게 되어 보안 문제가 발생할 수 있습니다.
+
+✅ **올바른 방법:**
+```typescript
+// tRPC 라우터에서
+.mutation(async ({ ctx, input }) => {
+  const service = ctx.container.get<IService>(SERVICE); // 요청별 컨테이너 사용
+});
+```
+
+❌ **잘못된 방법:**
+```typescript
+import { container } from '@/lib/di/container'; // 싱글톤 사용
+
+.mutation(async ({ ctx, input }) => {
+  const service = container.get<IService>(SERVICE); // ❌ 모든 사용자가 같은 인스턴스 공유
+});
+```
 

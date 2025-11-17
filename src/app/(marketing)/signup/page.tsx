@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { SignUpForm } from '@/components/auth/sign-up-form';
-import { OAuthButtons } from '@/components/auth/oauth-buttons';
+import { SignUpForm } from '@/features/auth/components/sign-up-form';
+import { OAuthButtons } from '@/features/auth/components/oauth-buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function SignUpPage() {

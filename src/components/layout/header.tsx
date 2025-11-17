@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Settings, LogOut, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
-import { signOut } from '@/lib/auth/actions';
+import { signOut } from '@/features/auth/actions/auth.actions';
 
 interface HeaderProps {
   user: User;

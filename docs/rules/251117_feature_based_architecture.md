@@ -232,7 +232,7 @@ features/{feature-name}/
 
 ```typescript
 // features/auth/services/auth.service.interface.ts
-import { injectable } from 'inversify';
+// ⚠️ 주의: injectable 데코레이터는 인터페이스가 아닌 구현체에만 사용합니다.
 
 export interface IAuthService {
   signIn(email: string, password: string): Promise<AuthResult>;
@@ -241,7 +241,7 @@ export interface IAuthService {
   getCurrentUser(): Promise<User | null>;
 }
 
-export const AUTH_SERVICE = Symbol('AuthService');
+// 심볼은 lib/di/symbols.ts에서 중앙 관리합니다.
 ```
 
 ### 4.2. 서비스 구현체

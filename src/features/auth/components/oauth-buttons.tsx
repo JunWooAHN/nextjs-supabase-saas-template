@@ -94,3 +94,4 @@ export function OAuthButtons({ onSuccess }: OAuthButtonsProps) {
     </div>
   );
 }
+

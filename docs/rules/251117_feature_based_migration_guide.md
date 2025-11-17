@@ -75,12 +75,20 @@ features/{feature-name}/
 
 3. **바인딩 생성** (`features/auth/bindings/auth.bindings.ts`)
    - ✅ 이미 생성됨
+   - 바인딩 함수 `bindAuthServices(container)` export
 
 4. **DI 컨테이너에 바인딩 등록**
    ```typescript
-   // lib/di/container.ts에 추가
-   import '@/features/auth/bindings/auth.bindings';
+   // lib/di/container.ts의 bindServices() 함수에 추가
+   import { bindAuthServices } from '@/features/auth/bindings/auth.bindings';
+   
+   function bindServices(container: Container): void {
+     bindAuthServices(container);
+     // ... 다른 feature 바인딩
+   }
    ```
+   
+   ⚠️ **중요**: 싱글톤 컨테이너를 사용하지 않습니다. 요청마다 새로운 컨테이너를 생성하는 `createContainer()` 팩토리 함수를 사용합니다.
 
 ### 단계 3: 기존 코드 마이그레이션
 
@@ -147,8 +155,9 @@ export const membershipRouter = router({
   inviteUserToEntity: protectedProcedure
     .input(z.object({ ... }))
     .mutation(async ({ ctx, input }) => {
-      // DI로 서비스 주입받아 사용
-      const membershipService = container.get<IMembershipService>(MEMBERSHIP_SERVICE);
+      // 요청별 DI 컨테이너에서 서비스 주입받아 사용
+      // ctx.container은 해당 요청 전용 컨테이너이므로 사용자별 세션이 보장됩니다.
+      const membershipService = ctx.container.get<IMembershipService>(MEMBERSHIP_SERVICE);
       await membershipService.inviteUserToEntity(input);
     }),
 });
@@ -259,8 +268,31 @@ export class MembershipService implements IMembershipService {
 ### 6.2. 바인딩 등록
 ```typescript
 // features/membership/bindings/membership.bindings.ts
-container.bind<IMembershipService>(MEMBERSHIP_SERVICE).to(MembershipService);
+import { Container } from 'inversify';
+import { MEMBERSHIP_SERVICE } from '@/lib/di/symbols';
+import { MembershipService } from '../services/membership.service';
+import type { IMembershipService } from '../services/membership.service.interface';
+
+/**
+ * 멤버십 서비스를 컨테이너에 바인딩
+ * @param container - 바인딩할 컨테이너 인스턴스
+ */
+export function bindMembershipServices(container: Container): void {
+  container.bind<IMembershipService>(MEMBERSHIP_SERVICE).to(MembershipService);
+}
 ```
+
+그리고 `lib/di/container.ts`의 `bindServices()` 함수에 추가:
+```typescript
+import { bindMembershipServices } from '@/features/membership/bindings/membership.bindings';
+
+function bindServices(container: Container): void {
+  bindMembershipServices(container);
+  // ... 다른 feature 바인딩
+}
+```
+
+⚠️ **중요**: 싱글톤 컨테이너를 사용하지 않습니다. 요청마다 새로운 컨테이너를 생성하는 `createContainer()` 팩토리 함수를 사용합니다.
 
 ### 6.3. tRPC 라우터 생성
 ```typescript
@@ -269,7 +301,9 @@ export const membershipRouter = router({
   inviteUserToEntity: protectedProcedure
     .input(z.object({ ... }))
     .mutation(async ({ ctx, input }) => {
-      const service = container.get<IMembershipService>(MEMBERSHIP_SERVICE);
+      // 요청별 DI 컨테이너에서 서비스 주입받아 사용
+      // ctx.container은 해당 요청 전용 컨테이너이므로 사용자별 세션이 보장됩니다.
+      const service = ctx.container.get<IMembershipService>(MEMBERSHIP_SERVICE);
       await service.inviteUserToEntity(input);
     }),
 });

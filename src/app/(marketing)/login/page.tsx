@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { SignInForm } from '@/components/auth/sign-in-form';
-import { OAuthButtons } from '@/components/auth/oauth-buttons';
+import { SignInForm } from '@/features/auth/components/sign-in-form';
+import { OAuthButtons } from '@/features/auth/components/oauth-buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LoginPage() {

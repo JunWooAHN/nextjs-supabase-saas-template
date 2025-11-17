@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 /**
@@ -34,30 +35,31 @@ export async function createServerSupabaseClient() {
 
 /**
  * Admin Supabase client for server-side operations
- * Uses the secret key and bypasses RLS (use with caution)
+ * Uses the secret key and bypasses RLS (use with extreme caution)
+ * 
+ * ⚠️ IMPORTANT: This function should only be used in exceptional cases:
+ * - Webhook handlers (payment, external services)
+ * - System migrations
+ * - Admin dashboards (with additional authentication)
+ * - Batch jobs
+ * 
+ * ⚠️ WARNING: @supabase/ssr does not support service_role keys.
+ * We must use @supabase/supabase-js directly as per Supabase documentation.
+ * 
+ * @see https://supabase.com/docs/guides/troubleshooting/performing-administration-tasks-on-the-server-side-with-the-servicerole-secret
  */
-export async function createAdminSupabaseClient() {
-  const cookieStore = await cookies();
-
-  return createServerClient(
+export function createAdminSupabaseClient() {
+  // ⚠️ Note: This is NOT async because @supabase/supabase-js createClient is synchronous
+  // Unlike @supabase/ssr's createServerClient which requires cookies (async)
+  
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SECRET_KEY!,
     {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
       },
     }
   );

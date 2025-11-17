@@ -1,0 +1,7 @@
+ignoredBuiltDependencies:
+  - protobufjs
+  - sharp
+  - unrs-resolver
+
+onlyBuiltDependencies:
+  - '@sentry/cli'

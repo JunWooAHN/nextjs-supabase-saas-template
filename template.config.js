@@ -34,9 +34,9 @@ export interface TemplateConfig {
 
 export const defaultConfig: TemplateConfig = {
   app: {
-    name: "{{APP_NAME}}",
-    description: "{{APP_DESCRIPTION}}",
-    author: "{{AUTHOR_NAME}}",
+    name: "prove-geo",
+    description: "prov-geo-web-app",
+    author: "AHN",
   },
   features: {
     auth: {
@@ -59,7 +59,7 @@ export const defaultConfig: TemplateConfig = {
     },
   },
   database: {
-    prefix: "{{DATABASE_PREFIX}}",
+    prefix: "",
   },
 };
 

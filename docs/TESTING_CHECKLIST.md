@@ -27,7 +27,7 @@ This checklist helps ensure your application works correctly across different sc
   - [ ] Verify profile creation
   - [ ] Test with existing Google account
 
-- [ ] **Apple OAuth** (if enabled)
+- [ ] **Apple OAuth** (not now. dont test)
   - [ ] Click Apple sign-in button
   - [ ] Complete OAuth flow
   - [ ] Verify profile creation

@@ -1,17 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { SignInForm } from '@/features/auth/components/sign-in-form';
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LoginPage() {
-  const router = useRouter();
-
   const handleSignInSuccess = () => {
-    // Redirect to dashboard after successful sign-in
-    router.push('/dashboard');
+    // 페이지 전체 리로드를 통해 세션을 확실히 설정
+    // router.push 대신 window.location.href를 사용하여 "Form submission canceled" 에러 방지
+    window.location.href = '/dashboard';
   };
 
   return (

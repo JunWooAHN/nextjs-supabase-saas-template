@@ -34,8 +34,17 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Define protected routes
-  const protectedRoutes = ['/dashboard', '/settings'];
+  // Define protected routes (role-based route groups)
+  // Note: Each route group's layout.tsx handles authentication via requireAuth()
+  // This middleware provides basic protection for all authenticated routes
+  const protectedRoutes = [
+    '/dashboard',      // (user)/dashboard
+    '/settings',       // (user)/settings
+    '/org/',          // (user)/org/[orgId]/*
+    '/center/',       // (user)/center/[centerId]/*
+    '/statistics',    // (user)/statistics
+    '/personal-proofs', // (user)/personal-proofs
+  ];
   const authRoutes = ['/login', '/signup'];
   
   const isProtectedRoute = protectedRoutes.some(route => 

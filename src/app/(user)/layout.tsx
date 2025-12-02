@@ -4,12 +4,18 @@ import { Sidebar } from '@/components/layout/sidebar';
 import { SidebarProvider } from '@/components/layout/sidebar-context';
 import { MainContent } from '@/components/layout/main-content';
 
-export default async function ProtectedLayout({
+/**
+ * Tier 1 (일반 사용자) 라우트 그룹 레이아웃
+ * 
+ * 모든 Tier 1 페이지는 이 레이아웃을 사용합니다.
+ * 인증이 필요하며, 인증되지 않은 사용자는 로그인 페이지로 리디렉션됩니다.
+ */
+export default async function UserLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // This will redirect to login if not authenticated
+  // 인증 확인 및 리디렉션
   const user = await requireAuth();
 
   return (
@@ -30,3 +36,4 @@ export default async function ProtectedLayout({
     </SidebarProvider>
   );
 }
+

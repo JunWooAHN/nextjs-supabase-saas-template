@@ -133,18 +133,17 @@
 
 ### 4.1. 누락된 라우트 그룹
 
-**현재 상태**: `(marketing)`, `(protected)`만 존재
+**현재 상태**: `(marketing)`, `(user)` 존재 (✅ `(protected)` 제거 완료 - 역할별 라우트 그룹으로 대체)
 
 **필요한 작업**:
 - [ ] `(user)` 라우트 그룹 생성 (일반 사용자)
 - [ ] `(org_management)` 라우트 그룹 생성 (조직 관리)
+  - `(org-management)/[orgId]/billing/page.tsx` 포함 (빌링 관리)
 - [ ] `(center_management)` 라우트 그룹 생성 (센터 관리)
+  - `(center-management)/[centerId]/billing/page.tsx` 포함 (빌링 관리)
 - [ ] `(law_agency)` 라우트 그룹 생성 (법정 대리인)
 - [ ] `(app_manager)` 라우트 그룹 생성 (앱 매니저)
-- [ ] `(billing)` 라우트 그룹 생성
-  - `(billing)/plans/page.tsx` (플랜 선택)
-  - `(billing)/manage/page.tsx` (결제 포털)
-  - `(billing)/suspended/page.tsx` (기능 정지 안내)
+- ❌ `(billing)` 라우트 그룹 불필요 (엔티티별 라우트에 포함)
 
 ### 4.2. API 라우트
 
@@ -173,7 +172,9 @@
 **필요한 작업**:
 - [ ] 구독 상태 체크 로직 추가
 - [ ] `entity_subscriptions` 테이블 조회
-- [ ] `status !== ACTIVE`인 경우 `/billing/suspended`로 리디렉션
+- [ ] `status !== ACTIVE`인 경우 엔티티별 billing 페이지로 리디렉션
+  - 조직: `/org-management/[orgId]/billing`
+  - 센터: `/center-management/[centerId]/billing`
 - [ ] 핵심 기능 라우트 그룹에 적용 (`(user)`, `(org_management)`, `(center_management)`)
 
 ## 6. 컴포넌트 (Components)

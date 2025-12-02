@@ -328,7 +328,7 @@ supabase db reset --version {version}
 인덱스가 이미 존재하면 무시
 정책이 이미 존재하면 재생성 (DROP 후 CREATE)
 트리거가 이미 존재하면 재생성 (DROP 후 CREATE)
-주의사항: POLICY와 TRIGGER는 DROP 후 CREATE하므로, 정책/트리거 변경 시 마이그레이션을 다시 실행하면 최신 정의로 업데이트됩니다. 이는 의도된 동작입니다.
+주의사항: POLICY와 TRIGGER는 DROP 후 CREATE하므로, 정책/트리거 변경 시 마이그레이션을 다시 실행하면 최신 정의로 업데이트됨
 
 ## 권장 사항
 

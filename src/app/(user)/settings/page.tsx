@@ -27,7 +27,7 @@ export default async function SettingsPage() {
         </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
-          <ProfileSettings user={user} />
+          <ProfileSettings />
         </TabsContent>
 
         <TabsContent value="account" className="space-y-6">
@@ -45,3 +45,4 @@ export default async function SettingsPage() {
     </div>
   );
 }
+

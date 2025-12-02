@@ -28,7 +28,7 @@ Tier 3 (앱 매니저)를 위한 Server Actions를 구현하고, SERVICE_ROLE_KE
 
 ### 5.2. 앱 매니저 권한 검증 유틸리티
 
-- [ ] `lib/auth/admin.ts` 생성 (또는 기존 파일에 추가)
+- [ ] `features/auth/utils/admin.utils.ts` 생성 (또는 `lib/auth/admin.ts`)
   - `verifyAppManager(userId: string): Promise<boolean>` 함수
     - `profiles` 테이블에서 `permissions` 조회
     - `IS_APP_MANAGER` 비트 체크
@@ -36,7 +36,7 @@ Tier 3 (앱 매니저)를 위한 Server Actions를 구현하고, SERVICE_ROLE_KE
 
 ### 5.3. Admin Server Actions 구현
 
-- [ ] `app/actions/admin.ts` 생성
+- [ ] `features/auth/actions/admin.actions.ts` 생성 (또는 별도 피처로 분리)
   - `getAllEntitiesForAppManager()` (Server Action)
     - 앱 매니저 권한 검증 (`verifyAppManager`)
     - SERVICE_ROLE_KEY로 모든 엔티티 조회
@@ -67,4 +67,6 @@ Tier 3 (앱 매니저)를 위한 Server Actions를 구현하고, SERVICE_ROLE_KE
 - RLS를 우회하므로 보안에 각별히 주의해야 합니다
 - 일반 비즈니스 로직에는 절대 사용하지 않습니다
 - `@supabase/ssr`는 service_role 키를 지원하지 않으므로 `@supabase/supabase-js`를 직접 사용합니다
+- **피처 기반 아키텍처**: Server Actions는 `features/{feature}/actions/` 디렉토리에 위치합니다
+- 앱 매니저 관련 기능은 `features/auth/actions/admin.actions.ts`에 구현하거나 별도 피처로 분리할 수 있습니다
 

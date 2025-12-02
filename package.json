@@ -19,7 +19,9 @@
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "reference:update": "bash scripts/manage-reference-repos.sh",
+    "reference:clone": "bash scripts/manage-reference-repos.sh"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",

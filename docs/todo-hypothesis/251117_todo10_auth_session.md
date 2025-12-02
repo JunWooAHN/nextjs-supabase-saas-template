@@ -19,8 +19,8 @@ Supabase 권장 방식에 따른 클라이언트 사이드 인증 패턴을 확�
 ### 10.1. 클라이언트 사이드 인증 패턴 확인
 
 - [ ] 현재 인증 구현 확인
-  - `src/components/auth/sign-in-form.tsx` 확인
-  - `src/components/auth/sign-up-form.tsx` 확인
+  - `features/auth/components/sign-in-form.tsx` 확인
+  - `features/auth/components/sign-up-form.tsx` 확인
   - Supabase 권장 방식 준수 여부 확인
 
 - [ ] 클라이언트 사이드 인증 패턴 검증
@@ -33,23 +33,24 @@ Supabase 권장 방식에 따른 클라이언트 사이드 인증 패턴을 확�
 ### 10.2. 회원가입 후 초기화 로직 구현
 
 - [ ] 회원가입 후 초기화 로직 추가
-  - `sign-up-form.tsx`에서 회원가입 성공 후 처리
-  - tRPC Mutation 호출: `trpc.initializeUserAccount.mutate({ userId })`
+  - `features/auth/components/sign-up-form.tsx`에서 회원가입 성공 후 처리
+  - tRPC Mutation 호출: `trpc.auth.initializeUserAccount.mutate({ userId })`
   - 또는 Server Action 호출 (선택적)
 
 - [ ] `initializeUserAccount` tRPC Mutation 구현
-  - 위치: `lib/trpc/routers/membership.ts` 또는 별도 파일
+  - 위치: `features/auth/trpc/auth.router.ts`
   - 기능: 회원가입 후 초기화 작업
   - 로직:
     - 기본 조직 생성 (선택적)
     - 기본 권한 설정
     - 초기 데이터 생성
   - 입력: `{ userId: string }`
+  - AuthService 또는 MembershipService 사용
 
 ### 10.3. OAuth 플로우 확인
 
 - [ ] Google OAuth 플로우 확인
-  - `src/components/auth/oauth-buttons.tsx` 확인
+  - `features/auth/components/oauth-buttons.tsx` 확인
   - 리디렉션 URL 설정 확인
   - 콜백 처리 확인 (`app/auth/callback/route.ts`)
 
@@ -81,4 +82,6 @@ Supabase 권장 방식에 따른 클라이언트 사이드 인증 패턴을 확�
 - 복잡한 비즈니스 로직은 tRPC Mutation에서 처리합니다
 - OAuth 플로우는 Supabase가 자동으로 처리합니다
 - 세션 관리는 Supabase가 자동으로 처리합니다 (쿠키 기반)
+- **피처 기반 아키텍처**: 인증 관련 컴포넌트는 `features/auth/components/`에 위치합니다
+- **인증 라우터**: `features/auth/trpc/auth.router.ts`에 인증 관련 tRPC 라우터를 구현합니다
 

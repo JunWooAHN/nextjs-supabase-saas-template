@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from 'react';
 import { User } from '@/lib/auth/session';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -13,7 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Settings, LogOut, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
-import { signOut } from '@/features/auth/actions/auth.actions';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 
 interface HeaderProps {
   user: User;
@@ -37,6 +39,29 @@ function getInitials(name?: string, email?: string): string {
 export function Header({ user }: HeaderProps) {
   const initials = getInitials(user.full_name, user.email);
   const displayName = user.full_name || user.email.split('@')[0];
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    
+    try {
+      const supabase = createBrowserSupabaseClient();
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        toast.error(error.message);
+        setIsSigningOut(false);
+        return;
+      }
+
+      // 페이지 전체 리로드를 통해 세션을 확실히 제거
+      window.location.href = '/login';
+    } catch (error) {
+      toast.error('An unexpected error occurred');
+      console.error('Sign out error:', error);
+      setIsSigningOut(false);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center border-b border-border bg-background px-6">
@@ -73,14 +98,14 @@ export function Header({ user }: HeaderProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <form action={signOut}>
-              <DropdownMenuItem asChild>
-                <button type="submit" className="flex w-full items-center">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
-                </button>
-              </DropdownMenuItem>
-            </form>
+            <DropdownMenuItem 
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className="cursor-pointer"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -18,16 +18,37 @@ src/
 │   ├── (auth)/                   # 인증 관련 라우트 그룹
 │   │   ├── login/
 │   │   └── signup/
-│   ├── (user)/                   # 일반 사용자 라우트 그룹
-│   │   └── dashboard/
-│   ├── (org-management)/        # 조직 관리 라우트 그룹
-│   ├── (center-management)/      # 센터 관리 라우트 그룹
+│   ├── (user)/                   # 일반 사용자 라우트 그룹 (Tier 1)
+│   │   ├── dashboard/           # 개인 대시보드
+│   │   ├── settings/            # 프로필 설정
+│   │   ├── org/[orgId]/         # 조직 컨텍스트 (일반 사용자 관점)
+│   │   │   ├── page.tsx         # 통합 출퇴근/위치보고 메인 페이지
+│   │   │   ├── history/         # 출퇴근 이력
+│   │   │   └── calendar/        # 출퇴근 캘린더
+│   │   └── center/[centerId]/   # 센터 컨텍스트 (일반 사용자 관점)
+│   │       ├── page.tsx         # 통합 출퇴근/위치보고 메인 페이지
+│   │       ├── history/         # 출퇴근 이력
+│   │       └── calendar/        # 출퇴근 캘린더
+│   ├── (org-management)/        # 조직 관리 라우트 그룹 (Tier 2)
+│   │   └── manage/              # 관리자 경로 prefix (라우팅 충돌 방지)
+│   │       └── org/  
+│   │           └── [orgId]/  
+│   │               ├── dashboard/  
+│   │               ├── members/  
+│   │               ├── settings/  
+│   │               ├── attendance/  
+│   │               └── billing/          # 실제 URL: /manage/org/[orgId]/billing
+│   ├── (center-management)/      # 센터 관리 라우트 그룹 (Tier 2)
+│   │   └── manage/              # 관리자 경로 prefix (라우팅 충돌 방지)
+│   │       └── center/  
+│   │           └── [centerId]/  
+│   │               ├── dashboard/  
+│   │               ├── organizations/  
+│   │               ├── settings/  
+│   │               ├── qr/  
+│   │               └── billing/          # 실제 URL: /manage/center/[centerId]/billing
 │   ├── (law-agency)/            # 법정 대리인 라우트 그룹
 │   ├── (app-manager)/           # 앱 매니저 라우트 그룹
-│   ├── (billing)/               # 결제 관련 라우트 그룹
-│   │   ├── plans/
-│   │   ├── manage/
-│   │   └── suspended/
 │   ├── api/
 │   │   ├── trpc/                # tRPC API 핸들러 (Tier 2)
 │   │   │   └── [trpc]/

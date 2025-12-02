@@ -16,29 +16,51 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       const supabase = createBrowserSupabaseClient();
       
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
         toast.error(error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!data.session) {
+        toast.error('Failed to create session');
+        setIsLoading(false);
+        return;
+      }
+
+      // 세션이 성공적으로 생성되었는지 확인
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error('Failed to verify user session');
+        setIsLoading(false);
         return;
       }
 
       toast.success('Signed in successfully!');
-      onSuccess?.();
+      
+      // 페이지 전체 리로드를 통해 세션을 확실히 설정
+      // 이렇게 하면 "Form submission canceled" 에러를 방지할 수 있습니다
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (error) {
       toast.error('An unexpected error occurred');
       console.error('Sign in error:', error);
-    } finally {
       setIsLoading(false);
     }
   };

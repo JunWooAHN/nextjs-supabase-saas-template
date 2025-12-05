@@ -367,6 +367,29 @@ export class PermissionsBitField {
   toJSON(): string {
     return this.bitfield.toString();
   }
+
+  /**
+   * JWT Hex String에서 인스턴스 생성 헬퍼
+   * 
+   * v5.6/v6.0 아키텍처에서 JWT의 app_metadata.memberships에 저장된
+   * 권한 정보는 16진수 문자열(Hex String)로 저장됩니다.
+   * 
+   * @param hex - 16진수 문자열 (예: "1f", "400")
+   * @returns PermissionsBitField 인스턴스
+   * 
+   * @example
+   * ```typescript
+   * const permHex = "1f"; // ORG_OWNER (31 in decimal)
+   * const permissions = PermissionsBitField.fromHex(permHex);
+   * permissions.has(PERMISSIONS.ORG_OWNER); // true
+   * ```
+   */
+  static fromHex(hex: string): PermissionsBitField {
+    // 16진수 문자열을 BigInt로 변환
+    // "0x" 접두사가 없으면 자동으로 추가
+    const hexValue = hex.startsWith('0x') ? hex : `0x${hex}`;
+    return new PermissionsBitField(BigInt(hexValue));
+  }
 }
 
 // ============================================

@@ -31,7 +31,7 @@ Layout에서 생성된 Context는 Page, Component 어디서 호출하든 동일�
 
 모든 엔티티(Organization, Center)는 전용 Context 클래스를 가진다.
 
-**파일 경로:** src/lib/context/org-context.ts
+**파일 경로:** src/lib/jwt-context/org-context.ts
 
 import { cache } from 'react';  
 import { redirect } from 'next/navigation';  
@@ -123,7 +123,7 @@ export const getOrgContext \= cache(async (orgId: string) \=\> {
 
 * **역할:** 컨텍스트 초기화, 기본 권한(VIEW) 체크, 사이드바 주입.
 
-import { getOrgContext } from '@/lib/context/org-context';  
+import { getOrgContext } from '@/lib/jwt-context/org-context';  
 import { PERMISSIONS } from '@/lib/permissions';
 
 export default async function OrgBaseLayout({ children, params }: any) {  
@@ -146,7 +146,7 @@ export default async function OrgBaseLayout({ children, params }: any) {
 
 * **역할:** 구독 상태 체크 (빌링 페이지 제외용).
 
-import { getOrgContext } from '@/lib/context/org-context';
+import { getOrgContext } from '@/lib/jwt-context/org-context';
 
 export default async function ProtectedLayout({ children, params }: any) {  
   const ctx \= await getOrgContext(params.orgId); // 캐시된 객체 재사용
@@ -163,7 +163,7 @@ export default async function ProtectedLayout({ children, params }: any) {
 
 **(1) Dashboard Page (.../dashboard/page.tsx)**
 
-import { getOrgContext } from '@/lib/context/org-context';
+import { getOrgContext } from '@/lib/jwt-context/org-context';
 
 export default async function DashboardPage({ params }: any) {  
   const ctx \= await getOrgContext(params.orgId); // 캐시 Hit
@@ -186,6 +186,15 @@ export default async function DashboardPage({ params }: any) {
 }
 
 ## **4\. 클라이언트 동기화 (Client Synchronization)**
+
+**인증 토큰 저장소 정책 (v6.0 확정):**
+- **Tier 1 (일반 사용자)**: 쿠키 기반 (`@supabase/ssr`의 `createBrowserClient` 사용)
+- **Tier 2 (SaaS Manager)**: 쿠키 기반 (서버 컴포넌트에서 `createServerSupabaseClient` 사용)
+
+**이유:**
+- Next.js App Router의 Middleware 보호를 위해 쿠키 필요
+- Server Context (getOrgContext 등)가 작동하려면 요청 헤더(Cookie)에 토큰 필요
+- Tier 1은 "데이터 접근 패턴(RLS Direct Access)"을 의미하며, 인증 스토리지 위치와는 무관
 
 서버 컨텍스트(OrgContext)는 JWT 쿠키를 기반으로 생성된다. 따라서 Tier 2 작업(tRPC)으로 상태가 변경되면, 반드시 클라이언트 쿠키를 갱신해야 한다.
 

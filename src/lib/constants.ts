@@ -60,3 +60,13 @@ export const SUBSCRIPTION_STATUS = {
 
 export type SubscriptionStatus = typeof SUBSCRIPTION_STATUS[keyof typeof SUBSCRIPTION_STATUS];
 
+/**
+ * 결제 상태 (Payment Status)
+ */
+export const PAYMENT_STATUS = {
+  SUCCESS: 1,     // 성공
+  FAILED: 2,       // 실패
+} as const;
+
+export type PaymentStatus = typeof PAYMENT_STATUS[keyof typeof PAYMENT_STATUS];
+
